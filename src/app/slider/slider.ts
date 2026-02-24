@@ -1,33 +1,31 @@
 import { Component } from '@angular/core';
 
 type Images = {
-  id:string,
-  url:string,
-  width:number,
-  height:number
+    id: string,
+    url: string,
+    width: number,
+    height: number  
 }
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-slider',
   imports: [],
-  templateUrl: './home.html',
-  styleUrl: './home.css',
+  templateUrl: './slider.html',
+  styleUrl: './slider.css',
 })
-
-export class Home {
-
+export class Slider {
   images: Images[] = [
-  {
-    "id": "7sa",
-    "url": "https://cdn2.thecatapi.com/images/7sa.gif",
-    "width": 480,
-    "height": 272
-  },
   {
     "id": "94h",
     "url": "https://cdn2.thecatapi.com/images/94h.png",
     "width": 500,
     "height": 334
+  },
+  {
+    "id": "7sa",
+    "url": "https://cdn2.thecatapi.com/images/7sa.gif",
+    "width": 480,
+    "height": 272
   },
   {
     "id": "ae7",
@@ -99,5 +97,5 @@ export class Home {
     else{
       this.currentIndex = 0;
     }
-  }
+}
 }

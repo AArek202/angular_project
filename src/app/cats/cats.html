@@ -1,0 +1,19 @@
+<div class="cats-container">
+  @for (cat of filteratedList; track $index) {
+  <div class="card" style="width: 18rem;" appShadow>
+    <div class="img-wrapper">
+      <img [src]="cat.url" class="card-img-top" [alt]="cat.id" appZoom>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{cat.name}}</h5>
+      <p class="card-text" 
+         appFulltext 
+         attr.data-full="{{cat.description}}"
+         data-show="3">
+        {{cat.description}}
+      </p>
+      <app-dynbutton (click)="chargeFees(cat)"></app-dynbutton>
+    </div>
+  </div>
+  }
+</div>
