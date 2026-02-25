@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color:bisque !important;
+}
+
+button {
+  background-color: #ee721f !important;
+  border-color: #ee721f !important;
+  color: aliceblue !important;
+}
+
+button:hover {
+  background-color:bisque !important;
+  color: black !important;
+  border-color: bisque !important;
+}

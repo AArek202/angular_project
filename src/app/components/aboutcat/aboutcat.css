@@ -1,0 +1,22 @@
+.container{
+    padding-top: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10%;
+}
+
+img{
+    width: 50%;
+    height: 30%;
+}
+
+button{
+    width: 20%;
+    height: 20%;
+    font-size: 30px;
+}
+
+button:hover{
+    border-color: chocolate !important;
+}

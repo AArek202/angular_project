@@ -30,7 +30,7 @@ export class MasterProducts {
     },
   ]
 
-    recievedPrice(price:number){
+  recievedPrice(price:number){
     this.totalPrice = price;
   }
 }

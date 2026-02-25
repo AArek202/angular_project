@@ -1,0 +1,72 @@
+<div style="display: flex;justify-content: center; margin-top: 10px;">
+  <form (ngSubmit)="submitForm()">
+    <fieldset>
+      <legend>Adopter Information</legend>
+
+      <!-- Personal Details -->
+      <div class="mb-3">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="phone" class="form-label">Phone Number</label>
+        <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <input type="text" id="address" class="form-control" placeholder="Street, City, State" required>
+      </div>
+
+      <!-- Living Situation -->
+      <div class="mb-3">
+        <label for="housingType" class="form-label">Housing Type</label>
+        <select id="housingType" class="form-select" required>
+          <option value="house">House</option>
+          <option value="apartment">Apartment</option>
+          <option value="condo">Condo</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="otherPets" class="form-label">Do you have other pets?</label>
+        <select id="otherPets" class="form-select" required>
+          <option value="none">No other pets</option>
+          <option value="dogs">Dogs</option>
+          <option value="cats">Cats</option>
+          <option value="others">Other pets</option>
+        </select>
+      </div>
+
+      <!-- Experience & Commitment -->
+      <div class="mb-3">
+        <label for="experience" class="form-label">Have you owned a cat before?</label>
+        <select id="experience" class="form-select" required>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="reason" class="form-label">Why do you want to adopt a cat?</label>
+        <textarea id="reason" class="form-control" rows="3" placeholder="Your reason for adoption" required></textarea>
+      </div>
+
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+        <label class="form-check-label" for="agreeTerms">
+          I agree to provide a loving home and proper care for the cat
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit Application</button>
+    </fieldset>
+  </form>
+</div>

@@ -1,4 +1,14 @@
-<div class="cats-container">
+<div class="selection-container">
+  <div class="select-wrap" style="width: 30%;">
+    <select class="form-select" [(ngModel)]="selectedBreedID" (change)="showedCats()">
+        @for(breed of breeds ; track breed.id){
+            <option [value]=breed.id>{{breed.name}}</option>
+        }
+    </select>
+  </div>
+</div>
+
+<div class="cats-container" style="margin-top: 30px;">
   @for (cat of filteratedList; track $index) {
   <div class="card" style="width: 18rem;" appShadow>
     <div class="img-wrapper">
@@ -13,7 +23,7 @@
           <span
           class="dots"
           (click)="toggleDescription(cat)">
-          ...
+          ...See more
         </span>
         }
 
@@ -21,29 +31,12 @@
           <span 
           class="dots"
           (click)="toggleDescription(cat)">
-          ...
+          ...See less
         </span>
         }
       </p>
-      <app-dynbutton (click)="chargeFees(cat)"></app-dynbutton>
+      <button class="btn" [routerLink]="['/aboutcats', cat.catId]" >About Me</button>
     </div>
   </div>
   }
 </div>
-
-<br>
-
-@if(!recievedId || recievedId === 'all'){
-  <div class="text-center mt-3">
-
-    @if(catlist.length > initialLimit){
-      <button class="btn btn-primary"
-            (click)="toggleShow()">
-
-        {{ showAll ? 'Show Less' : 'Show More' }}
-
-      </button>
-    }
-  </div>
-}
-
