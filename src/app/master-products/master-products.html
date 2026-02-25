@@ -1,11 +1,14 @@
 <br>
 <div class="select-wrap">
     <select class="form-select" [(ngModel)]="selectedBreedID">
+        <option value="all">All Breeds</option>
         @for(breed of breeds ; track breed.id){
             <option [value]=breed.id>{{breed.name}}</option>
         }
     </select>
 </div>
 <br>
-<app-cats [recievedId]="selectedBreedID"></app-cats>
+<app-cats [recievedId]="selectedBreedID" (fees)="recievedPrice($event)"></app-cats>
+<br>
+<app-totalprice [totalPrice]="totalPrice"></app-totalprice>
 <br>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-totalprice',
@@ -8,10 +8,6 @@ import { Component } from '@angular/core';
 })
 export class Totalprice {
 
-  totalPrice:number = 0;
-
-  recievedPrice(price:number){
-    this.totalPrice = price;
-  }
+   @Input() totalPrice: number = 0;
 
 }

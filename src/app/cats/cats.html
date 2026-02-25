@@ -6,14 +6,44 @@
     </div>
     <div class="card-body">
       <h5 class="card-title">{{cat.name}}</h5>
-      <p class="card-text" 
-         appFulltext 
-         attr.data-full="{{cat.description}}"
-         data-show="3">
-        {{cat.description}}
+      <p class="card-text">
+        {{ cat.expanded ? cat.description : (cat.description | wordslice:3) }}
+
+        @if(!cat.expanded && cat.description.split(' ').length > 3){
+          <span
+          class="dots"
+          (click)="toggleDescription(cat)">
+          ...
+        </span>
+        }
+
+        @if(cat.expanded){
+          <span 
+          class="dots"
+          (click)="toggleDescription(cat)">
+          ...
+        </span>
+        }
       </p>
       <app-dynbutton (click)="chargeFees(cat)"></app-dynbutton>
     </div>
   </div>
   }
 </div>
+
+<br>
+
+@if(!recievedId || recievedId === 'all'){
+  <div class="text-center mt-3">
+
+    @if(catlist.length > initialLimit){
+      <button class="btn btn-primary"
+            (click)="toggleShow()">
+
+        {{ showAll ? 'Show Less' : 'Show More' }}
+
+      </button>
+    }
+  </div>
+}
+

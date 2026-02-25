@@ -21,8 +21,4 @@ export class Dynbutton {
     }
   ]
 
-  adobtMe(){
-    alert("You Have Adobted Me!!");
-  }
-
 }

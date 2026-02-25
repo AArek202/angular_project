@@ -3,6 +3,7 @@ import { MasterProducts } from '../master-products/master-products';
 import { Zoom } from "../directives/zoom";
 import { Shadow } from "../directives/shadow";
 import { Dynbutton } from '../dynbutton/dynbutton';
+import { WordslicePipe } from '../pipes/wordslice-pipe';
 
 type CatList = {
     breedsId:string,
@@ -12,12 +13,13 @@ type CatList = {
     width: number,
     height: number,
     value:number,
-    description:string
+    description:string,
+    expanded?: boolean
 }
 
 @Component({
   selector: 'app-cats',
-  imports: [Zoom, Shadow,Dynbutton],
+  imports: [Zoom, Shadow,Dynbutton,WordslicePipe],
   templateUrl: './cats.html',
   styleUrl: './cats.css',
 })
@@ -26,8 +28,10 @@ export class Cats {
 
   filteratedList:CatList[]=[];
   @Input() recievedId = "";
-  @Output() fess = new EventEmitter<number>;
+  @Output() fees = new EventEmitter<number>;
   totalPrice = 0;
+  showAll = false;
+  initialLimit = 4;
 
   catlist:CatList[] = [
   {
@@ -233,22 +237,55 @@ export class Cats {
 ]
 
   ngOnInit(): void {
-    if(this.recievedId === ""){
-      this.filteratedList = this.catlist.splice(0,4);
+    if(this.recievedId === ""){ 
+      this.filteratedList = this.catlist.slice(0,4);
     }
   }
 
   ngOnChanges(): void {
-   this.showedCats()
+    this.showAll = false;
+    this.showedCats();
   }
 
-  showedCats(){
-    this.filteratedList = this.catlist.filter((el)=>el.breedsId === this.recievedId)
+  toggleShow() {
+    this.showAll = !this.showAll;
+    this.showedCats();
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 100);
+  }
+
+  showedCats() {
+
+    if (!this.recievedId || this.recievedId === 'all') {
+
+      if (this.showAll) {
+        this.filteratedList = [...this.catlist];
+      } else {
+        this.filteratedList = this.catlist.slice(0, this.initialLimit);
+      }
+
+    } else {
+      // Specific breed → show all of them
+      this.filteratedList = this.catlist.filter(
+        el => el.breedsId === this.recievedId
+      );
+    }
+
+  }
+
+  adobtMe(){
+    alert("You Have Adobted Me!!" + this.totalPrice);
   }
 
   chargeFees(catt:CatList){
     this.totalPrice += catt.value;
-    this.fess.emit(this.totalPrice);
+    this.fees.emit(this.totalPrice);
+    this.adobtMe();
+  }
+
+  toggleDescription(cat: CatList) {
+    cat.expanded = !cat.expanded;
   }
 
 }
