@@ -16,10 +16,23 @@ export const routes: Routes = [
         component : Main,
         children: [
             {path:'', component:Home},
-            {path: 'cats', component:Allcats},
+            {path: 'cats',
+                loadComponent: ()=>
+                import('./components/allcats/allcats').then((c)=>c.Allcats)
+            },
+            {path: 'adopt',
+                loadComponent: ()=>
+                import('./components/forms/adobtcat/adoptcat').then((c)=>c.Adoptcat)
+            },
+            {path: 'offer',
+                loadComponent: ()=>
+                import('./components/forms/offercat/offercat').then((c)=>c.Offercat)
+            },
+            
             {path: 'aboutcats/:ID', component:Aboutcat},
-            {path: 'adopt', component:Adoptcat},
-            {path: 'offer', component:Offercat}
+            
+            // {path: 'adopt', component:Adoptcat},
+            // {path: 'offer', component:Offercat}
         ]
     },
     {path:'**', component:Errorpage}

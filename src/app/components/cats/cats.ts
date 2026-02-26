@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-cats',
+  standalone: true,
   imports: [Zoom, Shadow, WordslicePipe, RouterLink],
   templateUrl: './cats.html',
   styleUrl: './cats.css',
@@ -26,7 +27,12 @@ export class Cats {
   constructor(public catlist:CatData){}
 
   getdata(){
-    this.filteratedList = this.catlist.getAllCats();
+    this.catlist.getAllCats().subscribe(data => {
+      this.filteratedList = data;
+    });
+    console.log(this.catlist.getAllCats().subscribe(data => {
+      this.filteratedList = data;
+    }))
   }
 
   ngOnInit(): void {
@@ -48,36 +54,34 @@ export class Cats {
 
   showedCats() {
 
-    const allCats = this.catlist.getAllCats();
+    this.catlist.getAllCats().subscribe((allCats: ICat[]) => {
 
-    if (!this.recievedId || this.recievedId === 'all') {
+      if (!this.recievedId || this.recievedId === 'all') {
 
-      if (this.showAll) {
-        this.filteratedList = [...allCats];
+        this.filteratedList = this.showAll
+          ? [...allCats]
+          : allCats.slice(0, this.initialLimit);
+
       } else {
-        this.filteratedList = allCats.slice(0, this.initialLimit);
+
+        this.filteratedList = allCats.filter(
+          el => el.breedsId === this.recievedId
+        );
+
       }
 
-    } else {
-      this.filteratedList = allCats.filter(
-        el => el.breedsId === this.recievedId
-      );
-    }
+    });
 
   }
 
   totalCatsCount(): number {
-    return this.catlist.getAllCats().length;
+    return this.filteratedList.length;
   }
 
-  adobtMe(){
-    alert("You Have Adobted Me!!" + this.totalPrice);
-  }
 
   chargeFees(catt:ICat){
     this.totalPrice += catt.value;
     this.fees.emit(this.totalPrice);
-    this.adobtMe();
   }
 
   toggleDescription(cat: ICat) {

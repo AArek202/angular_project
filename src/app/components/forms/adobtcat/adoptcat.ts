@@ -1,67 +1,97 @@
-import { Component } from '@angular/core';
-import { IAdopter } from '../../types/iadopter';
-import { AdopterData } from '../../services/adopter-data';
+import { Component, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-adoptcat',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './adoptcat.html',
-  styleUrls: ['./adoptcat.css'],
+  styleUrl: './adoptcat.css'
 })
-export class Adoptcat {
+export class Adoptcat implements OnInit {
 
-  constructor(private adopterService: AdopterData) {}
+  adoptForm!: FormGroup;
 
-  // Form model based on IAdopter
-  adopter: IAdopter = {
-    id: 0,
-    fullName: '',
-    email: '',
-    phone: '',
-    address: '',
-    housingType: '',
-    otherPets: '',
-    experience: '',
-    reason: '',
-    agreeTerms: false
-  };
+  constructor(private fb: FormBuilder) {}
 
-  submitForm() {
-
-    if (!this.adopter.agreeTerms) {
-      alert("You must agree to provide proper care.");
-      return;
-    }
-
-    // Generate new ID
-    const allAdopters = this.adopterService.getAllAopters();
-    const newId = allAdopters.length > 0
-      ? Math.max(...allAdopters.map(a => a.id)) + 1
-      : 1;
-
-    this.adopter.id = newId;
-
-    // Add to service
-    this.adopterService.addAdopter({ ...this.adopter });
-
-    console.log("Adopter Added:", this.adopter);
-    alert("Application submitted successfully!");
-
-    // Reset form
-    this.resetForm();
+  ngOnInit(): void {
+    this.adoptForm = this.fb.group({
+      fullName: ['', [
+        Validators.required,
+        this.fullNameValidator
+      ]],
+      email: ['', [
+        Validators.required,
+        Validators.email
+      ]],
+      phone: ['', [
+        Validators.required,
+        this.phoneValidator
+      ]],
+      address: ['', Validators.required],
+      housingType: ['', Validators.required],
+      otherPets: ['', Validators.required],
+      experience: ['', Validators.required],
+      reason: ['', [
+        Validators.required,
+        this.minWordsValidator(5)
+      ]],
+      agreeTerms: [false, this.mustBeTrueValidator]
+    });
   }
 
-  resetForm() {
-    this.adopter = {
-      id: 0,
-      fullName: '',
-      email: '',
-      phone: '',
-      address: '',
-      housingType: '',
-      otherPets: '',
-      experience: '',
-      reason: '',
-      agreeTerms: false
+
+  fullNameValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value?.trim();
+    if (!value) return null;
+
+    const nameParts = value.split(' ');
+    if (nameParts.length < 2) {
+      return { fullNameInvalid: true };
+    }
+
+    return null;
+  }
+
+  phoneValidator(control: AbstractControl): ValidationErrors | null {
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!phoneRegex.test(control.value)) {
+      return { invalidPhone: true };
+    }
+    return null;
+  }
+
+  minWordsValidator(minWords: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+
+      const words = control.value.trim().split(' ');
+      if (words.length < minWords) {
+        return { minWords: true };
+      }
+      return null;
     };
+  }
+
+  mustBeTrueValidator(control: AbstractControl): ValidationErrors | null {
+    if (control.value !== true) {
+      return { mustAgree: true };
+    }
+    return null;
+  }
+
+  submitForm() {
+    if (this.adoptForm.valid) {
+      console.log(this.adoptForm.value);
+      alert("Application Submitted Successfully");
+      this.adoptForm.reset();
+    } else {
+      this.adoptForm.markAllAsTouched();
+    }
+  }
+
+  get f() {
+    return this.adoptForm.controls;
   }
 }

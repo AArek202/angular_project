@@ -32,7 +32,9 @@ export class Allcats implements OnInit{
   constructor(public catlist:CatData ,public breedsList:BreedData){}
 
   getdata(){
-    this.filteratedList = this.catlist.getAllCats();
+    this.catlist.getAllCats().subscribe(data => {
+      this.filteratedList = data;
+    });
   }
 
   ngOnInit(): void {
@@ -46,24 +48,30 @@ export class Allcats implements OnInit{
   }
 
   showAllCats(){
-    this.filteratedList = this.catlist.getAllCats();
+    this.catlist.getAllCats().subscribe(data => {
+      this.filteratedList = data;
+    });
   }
 
   showedCats() {
 
-    const allCats = this.catlist.getAllCats();
+    this.catlist.getAllCats().subscribe((allCats: ICat[]) => {
 
-    if (!this.selectedBreedID) {
+      if (!this.recievedId || this.recievedId === 'all') {
 
-      if (this.showAll) {
-          this.filteratedList = [...allCats];
-      }
-    }
-    else {
+        this.filteratedList = this.showAll
+          ? [...allCats]
+          : allCats.slice(0, this.initialLimit);
+
+      } else {
+
         this.filteratedList = allCats.filter(
-          el => el.breedsId === this.selectedBreedID
+          el => el.breedsId === this.recievedId
         );
+
       }
+
+    });
 
   }
 

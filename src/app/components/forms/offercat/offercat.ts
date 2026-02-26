@@ -1,64 +1,107 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { ICat } from '../../types/icat';
 import { CatData } from '../../services/cat-data';
-import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-offercat',
   standalone: true,
-  imports: [FormsModule], 
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './offercat.html',
   styleUrls: ['./offercat.css'],
 })
-export class Offercat {
+export class Offercat implements OnInit {
 
-  constructor(private catService: CatData) {}
+  offerForm!: FormGroup;
 
-  // Form model
-  cat: ICat = {
-    catId: 0,
-    breedsId: '',
-    id: '',
-    name: '',
-    url: '',
-    width: 0,
-    height: 0,
-    value: 0,
-    description: '',
-    expanded: false
-  };
+  constructor(
+    private fb: FormBuilder,
+    private catService: CatData
+  ) {}
 
-  submitForm() {
-    // Generate new catId
-    const cats = this.catService.getAllCats();
-    const newId =
-      cats.length > 0
+  ngOnInit(): void {
+    this.offerForm = this.fb.group({
+      name: ['', [Validators.required, this.minLengthValidator(3)]],
+      breedsId: ['', [Validators.required, this.breedFormatValidator]],
+      id: ['', Validators.required],
+      url: ['', [Validators.required, Validators.pattern('https?://.+')]],
+      width: [0, [Validators.required, Validators.min(100)]],
+      height: [0, [Validators.required, Validators.min(100)]],
+      value: [0, [Validators.required, Validators.min(1)]],
+      description: ['', [Validators.required, this.minWordsValidator(5)]],
+    });
+  }
+
+  minLengthValidator(min: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+      if (control.value.trim().length < min) {
+        return { minLengthCustom: true };
+      }
+      return null;
+    };
+  }
+
+  breedFormatValidator(control: AbstractControl): ValidationErrors | null {
+    const regex = /^[a-z]{3,5}$/;
+    if (!regex.test(control.value)) {
+      return { invalidBreedId: true };
+    }
+    return null;
+  }
+
+  minWordsValidator(minWords: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+
+      const words = control.value.trim().split(' ');
+      if (words.length < minWords) {
+        return { minWords: true };
+      }
+      return null;
+    };
+  }
+
+  async submitForm() {
+
+    if (this.offerForm.invalid) {
+      this.offerForm.markAllAsTouched();
+      return;
+    }
+
+    try {
+      // Get cats array from Observable
+      const cats: ICat[] = await firstValueFrom(
+        this.catService.getAllCats()
+      );
+
+      const newId = cats.length > 0
         ? Math.max(...cats.map(c => c.catId)) + 1
         : 1;
 
-    this.cat.catId = newId;
+      const newCat: ICat = {
+        catId: newId,
+        expanded: false,
+        ...this.offerForm.value
+      };
 
-    // Add cat to service
-    this.catService.postCat({ ...this.cat });
+      await firstValueFrom(
+        this.catService.postCat(newCat)
+      );
 
-    console.log('Cat offered for adoption:', this.cat);
-    alert('Cat successfully offered for adoption!');
+      alert("Cat added successfully!");
+      this.offerForm.reset();
 
-    this.resetForm();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to add cat");
+    }
   }
 
-  resetForm() {
-    this.cat = {
-      catId: 0,
-      breedsId: '',
-      id: '',
-      name: '',
-      url: '',
-      width: 0,
-      height: 0,
-      value: 0,
-      description: '',
-      expanded: false
-    };
+  get f() {
+    return this.offerForm.controls;
   }
 }

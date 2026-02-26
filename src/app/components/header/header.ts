@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { ThemeService } from '../../components/services/theme';
 
 @Component({
   selector: 'app-header',
@@ -9,4 +10,5 @@ import { RouterLink } from "@angular/router";
 })
 export class Header {
 
+  constructor(public theme: ThemeService) {}
 }

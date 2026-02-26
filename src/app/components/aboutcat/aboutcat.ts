@@ -17,8 +17,11 @@ export class Aboutcat implements OnInit {
 
   ngOnInit(): void {
     this.id = Number(this.active.snapshot.paramMap.get('ID'));
+
     if (!isNaN(this.id)) {
-      this.selectedCat = this.catslist.getCatById(this.id)[0] || null;
+      this.catslist.getCatById(this.id).subscribe(cat => {
+        this.selectedCat = cat;
+      });
     }
   }
 }
